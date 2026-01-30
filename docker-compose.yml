@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15
+    container_name: tracebox-db
+    environment:
+      POSTGRES_DB: tracebox
+      POSTGRES_USER: tracebox
+      POSTGRES_PASSWORD: tracebox
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tracebox -d tracebox"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tracebox-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      APP_VERSION: dev
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: tracebox
+      DB_USER: tracebox
+      DB_PASSWORD: tracebox
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:

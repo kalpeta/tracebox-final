@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+app:
+  version: ${APP_VERSION:dev}
+  profile: ${SPRING_PROFILES_ACTIVE:local}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:tracebox}
+    username: ${DB_USER:tracebox}
+    password: ${DB_PASSWORD:tracebox}
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+flyway:
+  enabled: true
